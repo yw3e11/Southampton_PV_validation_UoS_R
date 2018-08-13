@@ -1,0 +1,94 @@
+---
+title: "Southampton_PV_validation"
+author: "Phil Wu: phil.wu@soton.ac.uk"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, out.width="600px", dpi=120)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(fig_caption = TRUE)
+knitr::opts_chunk$set(fig_height = 3) # default, make it bigger to stretch vertical axis
+knitr::opts_chunk$set(fig_width = 4) # full width
+knitr::opts_chunk$set(fig.align = 'center') # full width
+knitr::opts_chunk$set(tidy = TRUE) # tidy up code in case echo = TRUE
+options(digits=3) 
+# Set start time ----
+startTime <- Sys.time() 
+
+myPackages <- c("tidyverse", 
+                "lubridate", 
+                "zoo", 
+                "xts", 
+                "chron", 
+                "data.table", 
+                "scales",
+                "DT",
+                "fTrading", 
+                "data.table", 
+                "knitr", 
+                "gridExtra", 
+                "plotly", 
+                "stringr", 
+                "kableExtra", 
+                "maptools" ,
+                "ggmap",
+                "ggplot2",
+                "ggsn",
+                "sf",
+                "leaflet", 
+                "fmsb", 
+                "RColorBrewer",
+                #"plyr", # this library clash with dplyr all the time. 
+                "png")
+#"sp" ,
+#"rgdal",
+#"raster", 
+#"rasterVis" ,
+#"rgeos")
+
+#devtools::install_github("tidyverse/ggplot2")
+
+required_packages <- function(x,y){
+  for( i in x ){
+    if( ! require( i , character.only = TRUE ) ){
+      if( Sys.info()["sysname"] == "Linux" ){
+        install.packages( i , repos=y , type="source" , quiet=TRUE , dependencies = TRUE , verbose = FALSE )
+      } else {
+        install.packages( i , repos=y , quiet=TRUE , dependencies = TRUE , verbose = FALSE )
+      }
+      require( i , character.only = TRUE, quietly = TRUE )
+    }
+  }
+}
+
+required_packages((myPackages),"http://cran.rstudio.com/")
+
+# When find functions under dplyr (e.g. group_by) not working, try detach the packpage of "plyr"
+#detach(package:plyr)
+
+# Housekeeping
+#rm(list=ls(all=TRUE)) # remove all objects from workspace
+
+#Extended palette
+palette_Dark2 <- colorRampPalette(brewer.pal(8, "Dark2"))
+```
+
+
+```{r, include = F}
+# Overwrite the ggplot theme set to a more customerised appearance 
+ggplot <- function(...) ggplot2::ggplot(...) + 
+  scale_fill_brewer(palette = "Set1") + 
+  scale_color_brewer(palette = "Set1") +
+  theme_gray() +
+  theme(aspect.ratio = 1,
+        panel.background= element_rect(colour = "grey70", fill = "grey95"),
+        panel.border = element_rect(colour = "grey70", fill = NA),
+        strip.background = element_rect(colour = "grey70"))
+```
+
+Some updates
+
+
